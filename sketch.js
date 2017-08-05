@@ -21,9 +21,10 @@ var minY = 1;
 var maxY = 1;
 var ticks = 20;
 var derivMode = true;
-var windowW = 600;
-var windowH = 600;
-
+//var windowW = 600;
+//var windowH = 600;
+var windowW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 var trueArea ;
 var estimatedArea;
 var derivative;
@@ -49,7 +50,8 @@ var n;
 function setup() {
   createCanvas(windowW, windowH);
   background(0);
-  equation = parse_PEMDAS("sin(x)", 0);
+  
+  equation = parse_PEMDAS(".2*sin(x) + .1x", 0);
   controlsHeight = max(20, height/10);
   graphHeight = height - controlsHeight;
   tickLength = width/35;
@@ -67,7 +69,30 @@ function setup() {
     points[i] = myFunc(x);
   }
 
-  trueArea = roundTo(calculateIntegral(points),5);
+  //trueArea = roundTo(calculateIntegral(points),5);
+  trueArea = riemmans[2](width, 1, points, yScale, positiveYAxis, xRange);
+}
+function rescale() {
+    controlsHeight = max(20, height/10);
+    graphHeight = height - controlsHeight;
+    tickLength = width/35;
+    nSlider.position(width - sliderWidth, height - (controlsHeight/1.5));
+    xRange = minX + maxX;
+    yRange = minY + maxY;
+    positiveXAxis = maxX*(width/xRange);
+    negativeXAxis = minX*(width/xRange);
+    positiveYAxis = maxY*(graphHeight/yRange);
+    negativeYAxis = minY*(graphHeight/yRange);
+    yScale = graphHeight/(yRange); 
+    
+    for (var i = 0; i < width + 1; i++) {
+        var x = (i - negativeXAxis)*((xRange)/width);
+        points[i] = myFunc(x);
+    }
+    
+    trueArea = riemmans[2](width, 1, points, yScale, positiveYAxis, xRange);
+    //trueArea = calculateIntegral(points);
+
 }
 
 function draw() {
@@ -142,7 +167,7 @@ var displayStats = function() {
   text("x = " + roundTo(currentX,4), 10, height - 46);
   text("dy/dx = " + derivative, 10, height - 34);
   text("estimated = " + roundTo(estimatedArea, 5), 10, height - 22);
-  text("true = " + roundTo(trueArea, 5), 10, height - 10);
+  text("true = " + roundTo(trueArea, 4), 10, height - 10);
   //text("" + str(riemmans[activeSumIndex]), 10, 10);
 };
 
@@ -186,12 +211,27 @@ function mousePressed () {
 }
 
 function keyPressed() {
-    if (key == 'f' || key == 'F') {
+    if (key === 'f' || key === 'F') {
       equation = parse_PEMDAS(prompt("Enter f(x)", "sin(x)"), 0);
       for (var i = 0; i < width + 1; i++) {
         var x = (i - negativeXAxis)*((xRange)/width);
         points[i] = myFunc(x);
       }
       trueArea = roundTo(calculateIntegral(points),5);
+    }
+    else if (key === 's' || key === 'S') {
+        var currentScaleString = minX + " " + maxX + " " + minY + " " + maxY;
+        var scaleString = prompt("Enter min X, max X, min Y, max Y separated" 
+        + " by spaces", currentScaleString );
+        var scales = scaleString.split(' ');
+        // validate here
+      
+        minX = parseFloat(scales[0], 10);
+        maxX = parseFloat(scales[1], 10);
+        minY = parseFloat(scales[2], 10);
+        maxY = parseFloat(scales[3], 10);
+        console.log(minX + maxX + minY + maxY);
+        rescale();
+        //setup();
     }
 }

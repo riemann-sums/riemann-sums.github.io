@@ -1,6 +1,6 @@
 var calculateIntegral = function(points) {
   var val = 0;
-  for (var v = 0; v < width; v++) {
+  for (var v = 0; v < points.length; v++) {
     if (!isNaN(points[v])) {
       val += points[v];
     }
@@ -18,11 +18,12 @@ var midptSum = function(n, dx, points, yScale, postiveYAxis, xRange) {
     rect(g * dx, positiveYAxis - points[index + offset]*yScale, 
           dx, points[index + offset]*yScale);
     segmentHeight = points[index + offset];
+    // no longer pixel value, but real dx
     if (!isNaN((segmentHeight * dx))) {
-      area += (segmentHeight * dx);
+      area += (segmentHeight * (xRange / n));
     }
   } 
-  return (xRange / n) * area;
+  return area;
 };
 
 var leftHandSum = function(n, dx, points, yScale, postiveYAxis) {
@@ -33,9 +34,9 @@ var leftHandSum = function(n, dx, points, yScale, postiveYAxis) {
     fill(255, 0, 0, 120);
     rect(g * dx, positiveYAxis - points[index]*yScale, dx, points[index]*yScale);
     segmentHeight = points[index];
-    area += (segmentHeight * dx);
+    area += (segmentHeight * (xRange / n));
   } 
-  return (xRange / n) * area;
+  return area;
 };
 
 var trapezoidalSum = function(n, dx, points, yScale, postiveYAxis, xRange) {
