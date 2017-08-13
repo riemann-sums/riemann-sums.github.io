@@ -21,10 +21,12 @@ var minY = 1;
 var maxY = 1;
 var ticks = 20;
 var derivMode = true;
-//var windowW = 600;
-//var windowH = 600;
-var windowW = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-var windowH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+var windowW = window.innerWidth || document.documentElement.clientWidth ||
+  document.body.clientWidth;
+var windowH = window.innerHeight || document.documentElement.clientHeight ||
+  document.body.clientHeight;
+
 var trueArea ;
 var estimatedArea;
 var derivative;
@@ -70,6 +72,7 @@ function setup() {
   }
 
   //trueArea = roundTo(calculateIntegral(points),5);
+  alert("Click anywhere to toggle sum type. Use slider to set the number of rectangles. Press F to enter a new function and S to change the graph scale.");
   trueArea = riemmans[2](width, 1, points, yScale, positiveYAxis, xRange);
 }
 function rescale() {
