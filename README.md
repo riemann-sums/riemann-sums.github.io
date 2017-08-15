@@ -6,4 +6,9 @@ midpoint).
 Press f to enter a custom function.
 Window bounds are currently fixed but support for variable scales is coming soon.
 
+### To-do:
 
+- [ ] refactor (separate modules for graph & sums logic)
+- [ ] add padding around graph (possibly 1px white border?)
+- [ ] clean up UI, possibly add buttons, mobile friendly
+- [ ] only calculate area when necessary (dingus...)
