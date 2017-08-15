@@ -12,3 +12,4 @@ Window bounds are currently fixed but support for variable scales is coming soon
 - [ ] add padding around graph (possibly 1px white border?)
 - [ ] clean up UI, possibly add buttons, mobile friendly
 - [ ] only calculate area when necessary (dingus...)
+- [ ] properly credit @knexcar for writing the entire function parser
