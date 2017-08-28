@@ -8,7 +8,7 @@
 
 // Need to draw padding around graph
 class Graph {
-    constructor(points, n, minX, maxX, minY, maxY, w, h) {
+    constructor(points, n, minX, maxX, minY, maxY) {
         // does graph need minX maxX? yes, for drawing ONLY
         // DONT NEED W AND H ANYMORE, SHOULD BE ABLE TO SUB FOR
         // WIDTH / HEIGHT
@@ -28,12 +28,11 @@ class Graph {
     	this.xRange = (minX + maxX);
     	this.yRange = (minY + maxY);
 
-        this.windowW = w;
-        this.windowH = h;
-        this.padding = 10;
+        this.padding = 15;
 
-        this.sideBarSize = windowW * 0.20;
-        this.graphWidth = windowW - this.sideBarSize - this.padding;
+        this.sideBarSize = width * 0.20;
+        this.graphWidth = width - this.sideBarSize - this.padding;
+        this.graphHeight = height - this.padding * 2;
         // points should be converted to pixel values here
         // this.scalePoints(); ???
     }
@@ -42,11 +41,11 @@ class Graph {
         // can use map here?
         // map would likely be more appropraite, no need to
         // mutate original []
-        var yScale = (this.windowH - 2 * this.padding)/ this.yRange;
-        var yScale = this.windowH / this.yRange;
+        var yScale = (height - 2 * this.padding)/ this.yRange;
+        //var yScale = height / this.yRange;
         for (var i = 0; i < this.points.length; i++) {
             this.points[i] = 
-                this.windowH *
+                height *
                 (this.maxY / this.yRange) -
                 (this.points[i] * yScale);
         }
@@ -59,16 +58,18 @@ class Graph {
         }
 
     	stroke(255);
-        line(this.sideBarSize, 0, this.sideBarSize, height);
+        noFill();
+        //line(this.sideBarSize, 0, this.sideBarSize, height);
+        rect(this.sideBarSize, this.padding, this.graphWidth, height - 2*this.padding)
         
         // X axis 
-    	line(this.sideBarSize, this.windowH * (this.maxY/this.yRange),
-            this.graphWidth + this.sideBarSize, this.windowH * (this.maxY/this.yRange));
+    	line(this.sideBarSize, height * (this.maxY/this.yRange),
+            this.graphWidth + this.sideBarSize, height * (this.maxY/this.yRange));
         
         // Y axis 
         line(this.sideBarSize + this.graphWidth * (this.maxX/this.xRange), this.padding,
             this.sideBarSize + this.graphWidth * (this.maxX/this.xRange),
-            windowH - this.padding);
+            height - this.padding);
 
         for(var i = 0; i <= ticks; i++) {
             // option to show grid lines, default to ticks
@@ -77,19 +78,18 @@ class Graph {
             noStroke();
             fill(255);
 
-            text(roundTo(-this.minX + (i * (this.xRange / ticks)), 5), 
+            text(roundTo(-this.minX + (i * (this.xRange / ticks)), 3), 
                 this.sideBarSize + (this.graphWidth / ticks) * i,
-                this.windowH * (this.maxY/this.yRange) - 5);
-            text(roundTo(-this.minY + (i * (this.yRange / ticks)), 5), 
+                height * (this.maxY/this.yRange) - 5);
+            text(roundTo(-this.minY + (i * (this.yRange / ticks)), 3), 
                 this.sideBarSize + this.graphWidth * (this.maxX / this.xRange) + 5,
-                this.windowH - i * (this.windowH / ticks));
+                this.graphHeight - i * (this.graphHeight / ticks));
         }
     }
 
     drawCurve() {
         fill(255);
         for (var i = 0; i < this.points.length - 1; i++) {
-            //ellipse(i + this.sideBarSize, this.points[i], 1, 1);
             stroke(255);
             line(i + this.sideBarSize, this.points[i],
                 i + this.sideBarSize + 1, this.points[i + 1]);
