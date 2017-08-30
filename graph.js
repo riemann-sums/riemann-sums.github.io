@@ -17,7 +17,8 @@ class Graph {
         // would be good to include padding in these constants as well
         
         this.sum = "leftHand";
-        this.points = points;
+        this.points = [];
+        this.unscaledPoints = points;
         this.n = n;                     // could be 0, updates when setN?
         this.dx = points.length / n;    // could be 0, updates when setN?
         this.minX = minX;
@@ -43,11 +44,11 @@ class Graph {
         // mutate original []
         var yScale = (height - 2 * this.padding)/ this.yRange;
         //var yScale = height / this.yRange;
-        for (var i = 0; i < this.points.length; i++) {
+        for (var i = 0; i < this.unscaledPoints.length; i++) {
             this.points[i] = 
                 height *
                 (this.maxY / this.yRange) -
-                (this.points[i] * yScale);
+                (this.unscaledPoints[i] * yScale);
         }
     }
 
@@ -71,9 +72,10 @@ class Graph {
             this.sideBarSize + this.graphWidth * (this.maxX/this.xRange),
             height - this.padding);
 
-        for(var i = 0; i <= ticks; i++) {
+        for(var i = 0; i < ticks; i++) {
             // option to show grid lines, default to ticks
             // if ticks == 0 or none is passed, no ticks
+            // also need option to show incrs of PI
             textSize(8);
             noStroke();
             fill(255);
