@@ -9,9 +9,7 @@ var graph,
     sums,
     testPoints,
     mouseHeld,
-    initialMouse,
     n;
-
 
 // actual number of points stored
 // also represents max n
@@ -37,12 +35,13 @@ function setup() {
 
 function draw() {
     noLoop();
+    noSmooth();
     background(27, 29, 28);
     graph.drawCurve();
     graph.drawSidebar();    // this will be changed to a top...(?) bar
     graph.drawLH();         // thess functions will only actually draw the sums
-    graph.drawRH();         // if graph.displayLH === true etc...
-    graph.drawTrapezoid();
+    //graph.drawRH();         // if graph.displayLH === true etc...
+    graph.drawTrapezoid();  // these will also be called in Graph (maybe)
     graph.drawAxes(10);
     // impossible to see graph labels when n is too high
 }
@@ -51,12 +50,9 @@ function windowResized() {
   //resizeCanvas(windowWidth, windowHeight);
 }
 
-
-// SHOULD contain this logic in slider
 function mousePressed() {
     if (graph.slider.mouseOver()) {
         mouseHeld = true;
-        initialMouse = mouseX;
     }
 }
 
@@ -70,6 +66,6 @@ function mouseDragged() {
     if (mouseHeld){
         graph.slider.setPosition(mouseX);
         graph.setN(Math.round(graph.slider.getPortion() * MAX_N));
+        redraw();
     }
-    redraw();
 }

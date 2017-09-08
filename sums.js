@@ -7,33 +7,25 @@ class Sums {
     constructor(n, points, xRange) {
         this.n = n;
         this.points = points;
-        this.dx = xRange / n;
-        // DX IS NOT RELATED TO THE NUMBER OF TOTAL POINTS, THIS
-        // IS DETERMINED BY WINDOW WIDTH. DX IS RELATED TO
-        // THE RANGE OF X VALUES
+        this.xRange = xRange;
+        this.dx = this.xRange / n;
         this.pixelInterval = points.length / n;
-        // temp solution? ideally, LH(2) and LH(4) == 0...
-        // this keeps track of the PIXEL value of dx for stepping
-        // through the array of points, whereas this.dx is directly
-        // related to the xrange the points [a, b]
-        //console.log(this.n + ' ' + this.dx);
-        //console.log(this.points);
     }
 
     leftHand() {
         var sum = 0;
         for (var i = 0; i < this.n; i++) {
-            sum += this.points[Math.round(i * this.pixelInterval)] * this.dx;
+            sum += this.points[Math.round(i * this.pixelInterval)];
         }
-        return sum;
+        return sum * this.dx;
     }
 
     rightHand() {
         var sum = 0;
         for (var i = 1; i <= this.n; i++) {
-            sum += this.points[Math.round(i * this.pixelInterval) - 1] * this.dx;
+            sum += this.points[Math.round(i * this.pixelInterval) - 1];
         }
-        return sum;
+        return sum * this.dx;
     }
 
     trapezoid() {
@@ -49,29 +41,16 @@ class Sums {
     }
 
     actual() {
-        // can use reduce here
-        // another case where, if im smarter about how i store points,
-        // i should be able to get 0 here on sin(x) etc...
-        // think the answer is standardize points array to something wider
-        // than average display, maybe 10,000? then will have constant pixel
-        // interval
-        var sum = 0;
-        for (var i = 0; i < this.points.length; i++) {
-            sum += this.points[i];
-        }
-        return sum / this.pixelInterval;
-        //return this
-
+        var initValue = this.points[0] + this.points[this.points.length - 1];
+        var dx = this.xRange / this.points.length;
+        return (dx/ 2) * this.points.reduce(function (sum, point) {
+            return sum + 2 * point;
+        }, initValue);
     }
     
     setN(n) {
         this.n = n; 
-        this.dx = this.points.length / n;
+        this.dx = this.xRange / n
         this.pixelInterval = this.points.length / n;
     }
-    
-    // setPoints(points) {
-    //     this.points = points;
-    //     this.dx = points.length / this.n;
-    // }
 }

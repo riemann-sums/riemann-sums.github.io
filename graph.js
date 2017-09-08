@@ -202,4 +202,8 @@ class Graph {
         text("n: " + this.n, 20, 150);
         this.slider.draw();
     }
+
+    noSubRect(x, y, w, h) {
+        rect(Math.floor(x), Math.floor(y), Math.ceil(w), Math.ceil(h));
+    }
 }

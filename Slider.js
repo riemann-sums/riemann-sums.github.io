@@ -9,9 +9,8 @@ class Slider {
         this.y = y;
         this.length = length;
         this.handleX = this.x - this.length / 2;
-        this.position = 0;
-        //this.sliderSize = length / 5;
         this.sliderSize = 14;
+        //this.sliderSize = length / 5;
     }
 
     draw() {
@@ -21,7 +20,6 @@ class Slider {
         line(this.handleX, this.y - 7, this.handleX, this.y + 7);
         noFill();
         ellipse(this.handleX, this.y, this.sliderSize, this.sliderSize);
-        //ellipse(this.x - this.length / 2 + this.position, this.y, this.sliderSize, this.sliderSize);
     }
 
     mouseOver() {
@@ -29,18 +27,13 @@ class Slider {
                 this.y, mouseX, mouseY) <= this.sliderSize;
     }
 
-    inBounds() {
+    bound() {
         if (this.getPortion() > 1) {
-            console.log("over");
             this.handleX = this.x + this.length / 2;
-            return false;
         }
         else if (this.getPortion() < 0) {
-            console.log("under");
             this.handleX = this.x - this.length / 2;
-            return false;
         }
-        return true;
     }
 
     setPosition(x) {
@@ -49,11 +42,12 @@ class Slider {
             
             this.handleX = x;
         }
-        this.inBounds();
+        this.bound();
     }
 
     getPortion() {
         return (this.handleX - (this.x - this.length / 2)) / this.length;
     }
-
 }
+
+
