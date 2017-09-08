@@ -23,18 +23,17 @@ class Sums {
     leftHand() {
         var sum = 0;
         for (var i = 0; i < this.n; i++) {
-            sum += this.points[Math.round(i * this.pixelInterval)];
+            sum += this.points[Math.round(i * this.pixelInterval)] * this.dx;
         }
-        return sum * this.dx;
+        return sum;
     }
 
     rightHand() {
         var sum = 0;
         for (var i = 1; i <= this.n; i++) {
-            sum += this.points[Math.round(i * this.pixelInterval) - 1];
-            console.log(Math.round(i * this.pixelInterval) - 1);
+            sum += this.points[Math.round(i * this.pixelInterval) - 1] * this.dx;
         }
-        return sum * this.dx;
+        return sum;
     }
 
     trapezoid() {
@@ -46,7 +45,6 @@ class Sums {
         }
         sum *= this.dx;
         sum *= .5;
-        console.log(sum);
         return sum;
     }
 
@@ -61,17 +59,19 @@ class Sums {
         for (var i = 0; i < this.points.length; i++) {
             sum += this.points[i];
         }
-        return sum;
+        return sum / this.pixelInterval;
+        //return this
 
     }
     
     setN(n) {
         this.n = n; 
         this.dx = this.points.length / n;
+        this.pixelInterval = this.points.length / n;
     }
     
-    setPoints(points) {
-        this.points = points;
-        this.dx = points.length / this.n;
-    }
+    // setPoints(points) {
+    //     this.points = points;
+    //     this.dx = points.length / this.n;
+    // }
 }

@@ -1,43 +1,75 @@
 // TODO: 
 // -[ ] autoscale on window resize
-// -[ ] padding around graph
+// -[x] padding around graph
 // -[ ] simple UI controls, scaling text
 // -[ ] 'usable' on mobile
 // -[ ] comments on parsing code, credit to knexcar
-// -[ ] could use noloop(), only redraw on slider change?
-
-var windowW = window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth;
-var windowH = window.innerHeight ||
-    document.documentElement.clientHeight ||
-    document.body.clientHeight;
+// -[x] could use noloop(), only redraw on slider change?
 var graph,
     sums,
-    testPoints;
+    testPoints,
+    mouseHeld,
+    initialMouse,
+    n;
 
-function setup() {
-	
-    createCanvas(windowW, windowH);
-    background(0);
+
+// actual number of points stored
+// also represents max n
+const ACCURACY = 10000;
+const MAX_N = 50;
+
+function setup() {	
+    createCanvas(windowWidth, windowHeight);
+    background(27, 29, 28);
     testPoints = [];
-    graph = new Graph(testPoints, 50, 3.14159, 3.14159, 1, 1); 
-    for (var i = 0; i < graph.graphWidth; i++) {
-        testPoints.push(sin((2 * Math.PI)*(i / graph.graphWidth)));
-        //testPoints.push(0.5);
+    mouseHeld = false;
+
+    graph = new Graph(testPoints, 0, 2 * Math.PI, 2 * Math.PI, 1, 1); 
+    var x;
+    for (var i = 0; i < ACCURACY; i++) {
+        x = -graph.minX + (graph.xRange) * (i / ACCURACY);
+        //testPoints.push(x ** 2);
+        testPoints.push(0.2 * sin(x) + 0.1 * x);
+
     }
-    sums = new Sums(7, graph.unscaledPoints, graph.xRange);
-
     graph.scalePoints(); // should be in constructor (?)
-    graph.drawCurve();
-    graph.drawSidebar(sums);
-    graph.drawLH();
-    // draw axes on top
-    graph.drawAxes(20);
-
-    console.log(sums.actual());
 }
 
 function draw() {
+    noLoop();
+    background(27, 29, 28);
+    graph.drawCurve();
+    graph.drawSidebar();    // this will be changed to a top...(?) bar
+    graph.drawLH();         // thess functions will only actually draw the sums
+    graph.drawRH();         // if graph.displayLH === true etc...
+    graph.drawTrapezoid();
+    graph.drawAxes(10);
+    // impossible to see graph labels when n is too high
+}
 
+function windowResized() {
+  //resizeCanvas(windowWidth, windowHeight);
+}
+
+
+// SHOULD contain this logic in slider
+function mousePressed() {
+    if (graph.slider.mouseOver()) {
+        mouseHeld = true;
+        initialMouse = mouseX;
+    }
+}
+
+function mouseReleased() {
+    if (mouseHeld) {
+        mouseHeld = false;
+    }
+}
+
+function mouseDragged() {
+    if (mouseHeld){
+        graph.slider.setPosition(mouseX);
+        graph.setN(Math.round(graph.slider.getPortion() * MAX_N));
+    }
+    redraw();
 }
