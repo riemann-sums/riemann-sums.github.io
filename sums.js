@@ -13,6 +13,7 @@ class Sums {
     }
 
     leftHand() {
+        if (this.n === 0) { return 0 };
         var sum = 0;
         for (var i = 0; i < this.n; i++) {
             sum += this.points[Math.round(i * this.pixelInterval)];
@@ -21,6 +22,7 @@ class Sums {
     }
 
     rightHand() {
+        if (this.n === 0) { return 0 };
         var sum = 0;
         for (var i = 1; i <= this.n; i++) {
             sum += this.points[Math.round(i * this.pixelInterval) - 1];
@@ -29,6 +31,7 @@ class Sums {
     }
 
     trapezoid() {
+        if (this.n === 0) { return 0 };
         var sum = 0;
         sum += this.points[0];
         sum += this.points[this.points.length - 1];

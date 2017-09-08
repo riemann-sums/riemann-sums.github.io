@@ -49,5 +49,3 @@ class Slider {
         return (this.handleX - (this.x - this.length / 2)) / this.length;
     }
 }
-
-
