@@ -10,6 +10,7 @@
 // -[ ] add buttons for changing tick #, type, n, and function
 // -[ ] rewrite hastily crafted button class (pls)
 // -[ ] readme.md
+// -[ ] separate grid lines and labels (lines behind, labels in front)
 
 var graph,
     sums,

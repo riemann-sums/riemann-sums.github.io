@@ -30,7 +30,7 @@ class Button {
 	mouseOver() {
 		this.textWidth = textWidth(text + this.updateFunction());
 		if ((mouseX - this.x) < this.textWidth / 2 && mouseX - this.x > 0 &&
-			this.y * 1.5) {
+			mouseY < this.y * 1.5) {
 			return true;
 		}
 		return false;
