@@ -3,17 +3,21 @@
 // -[x] padding around graph
 // -[ ] midpoint sum
 // -[ ] variable function
-// -[ ] simple UI controls, scaling text
+// -[x] simple UI controls, scaling text
 // -[ ] 'usable' on mobile
 // -[ ] comments on parsing code, credit to knexcar
 // -[x] could use noloop(), only redraw on slider change?
+// -[ ] add buttons for changing tick #, type, n, and function
+// -[ ] rewrite hastily crafted button class (pls)
+// -[ ] readme.md
+
 var graph,
     sums,
     testPoints = [],
     mouseHeld = false;
 
 const ACCURACY = 10000;         // number of points computed
-const MAX_N = 75;              // max value of the n slider
+const MAX_N = 75;               // max value of the n slider
 const INIT_MAX_X = 2 * Math.PI; // initial graph domain (both min and max)
 
 function setup() {	
@@ -33,12 +37,9 @@ function draw() {
     noSmooth();
     background(27, 29, 28);
     graph.drawCurve();
-    //graph.drawSidebar();    // this will be changed to a top...(?) bar
-    graph.drawLH();         // these functions will only actually draw the sums
-    graph.drawRH();         // if graph.displayLH === true etc...
-    graph.drawTrapezoid();  // these will also be called in Graph (maybe)
-    graph.drawAxes(10);
-    // impossible to see graph labels when n is too high
+    graph.drawAxes(30);
+    graph.drawTopBar();
+    graph.drawActiveSums();
 }
 
 function windowResized() {
@@ -50,6 +51,12 @@ function mousePressed() {
     if (graph.slider.mouseOver()) {
         mouseHeld = true;
     }
+    graph.getButtons().forEach(function (button) {
+        if (button.mouseOver()) {
+            button.toggle();
+            redraw();
+        }
+    })
 }
 
 function mouseReleased() {

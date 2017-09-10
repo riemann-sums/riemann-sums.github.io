@@ -33,8 +33,9 @@ class Graph {
         this.yAxisRatio = this.maxY / this.yRange;
         this.showGrid = true;
 
-        this.padding = 15;
+        this.padding = 30;
         this.controlPanelHeight = height * .03;
+        this.buttons = [];
 
         this.sideBarSize = width * 0.20;
         this.graphWidth = width - this.padding * 2;
@@ -43,9 +44,11 @@ class Graph {
 
         this.dx = this.graphWidth / this.n;    // could be 0, updates when setN?
         this.scalePoints();
+        this.createButtons();
         this.pixelConversion = this.points.length / this.graphWidth;
         // if there is a seperate UI class, this.slider should be created there
-        this.slider = new Slider(this.sideBarSize/2, height * 0.35, this.sideBarSize * 0.7);
+        var sliderLength = this.graphWidth / 5;
+        this.slider = new Slider(width - this.padding - sliderLength / 2, this.padding/2, sliderLength);
         this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
     }
 
@@ -168,21 +171,63 @@ class Graph {
     }
 
     // likely deserves it's own class eventually
-    drawSidebar() {
+    createButtons() {
+        var spacing = this.graphWidth / 6;
+        var actual = new Button(this.padding, this.padding/ 1.5,
+            "actual: ", () => { return this.roundTo(this.sums.actual(), 5)});
+
+        var leftHand = new Button(this.padding + 1 * spacing, this.padding/ 1.5,
+            "LH: ", () => { return this.roundTo(this.sums.leftHand(), 5)}, true);
+
+        var rightHand = new Button(this.padding + 2 * spacing, this.padding/ 1.5,
+            "RH: ", () => { return this.roundTo(this.sums.rightHand(), 5)}, true);
+
+        var trapezoid = new Button(this.padding + 3 * spacing, this.padding/ 1.5,
+            "T: ", () => { return this.roundTo(this.sums.trapezoid(), 5)}, true);
+
+        var n = new Button(this.padding + 4 * spacing, this.padding/ 1.5,
+            "n: ", () => { return this.n});
+
+        this.buttons = [actual, leftHand, rightHand, trapezoid, n];
+    }
+
+    drawButtons() {
         textSize(width/63);
         fill(255);
         stroke(255);
         strokeWeight(0);
-        text("actual: " + this.roundTo(this.sums.actual(), 5), 20, 30);
-        fill(176, 214, 139);
-        stroke(176, 214, 139);
-        // Active sums should be highlighted green
-        text("LH: " + this.roundTo(this.sums.leftHand(), 5), 20, 60);
-        text("RH: " + this.roundTo(this.sums.rightHand(), 5), 20, 90);
-        text("T: " + this.roundTo(this.sums.trapezoid(), 5), 20, 120);
-        fill(255);
-        stroke(255);
-        text("n: " + this.n, 20, 150);
+        this.buttons.forEach(function (button) {
+            button.draw();
+        });
+    }
+
+    drawActiveSums() {
+        var self = this;
+        this.buttons.forEach(function (button) {
+            if (button.active) {
+                switch (button.text) {
+                    case "LH: ":
+                        self.drawLH();
+                        break;
+                    case "RH: ":
+                        self.drawRH();
+                        break;
+                    case "T: ":
+                        self.drawTrapezoid();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    getButtons() {
+        return this.buttons;
+    }
+
+    drawTopBar() {
+        this.drawButtons();
         this.slider.draw();
     }
 
