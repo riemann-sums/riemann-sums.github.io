@@ -31,8 +31,10 @@ class Graph {
     	this.yRange = (minY + maxY);
 
         this.yAxisRatio = this.maxY / this.yRange;
+        this.showGrid = true;
 
         this.padding = 15;
+        this.controlPanelHeight = height * .03;
 
         this.sideBarSize = width * 0.20;
         this.graphWidth = width - this.padding * 2;
@@ -80,6 +82,14 @@ class Graph {
             // option to show grid lines, default to ticks
             // if ticks == 0 or none is passed, no ticks
             // also need option to show incrs of PI
+            stroke(127, 127);
+            strokeWeight(0.5)
+            if (this.showGrid) {
+                line(this.padding + (this.graphWidth / ticks) * i, this.padding,
+                     this.padding + (this.graphWidth / ticks) * i, height - this.padding);
+                line(this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks),
+                    width - this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks));
+            }
             textSize(8);
             //noStroke();
             stroke(27, 29, 28);

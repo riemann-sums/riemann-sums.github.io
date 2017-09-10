@@ -33,8 +33,8 @@ function draw() {
     noSmooth();
     background(27, 29, 28);
     graph.drawCurve();
-    graph.drawSidebar();    // this will be changed to a top...(?) bar
-    graph.drawLH();         // thess functions will only actually draw the sums
+    //graph.drawSidebar();    // this will be changed to a top...(?) bar
+    graph.drawLH();         // these functions will only actually draw the sums
     graph.drawRH();         // if graph.displayLH === true etc...
     graph.drawTrapezoid();  // these will also be called in Graph (maybe)
     graph.drawAxes(10);
