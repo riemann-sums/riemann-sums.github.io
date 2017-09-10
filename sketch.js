@@ -37,7 +37,7 @@ function draw() {
     noSmooth();
     background(27, 29, 28);
     graph.drawCurve();
-    graph.drawAxes(30);
+    graph.drawAxes(20);
     graph.drawTopBar();
     graph.drawActiveSums();
 }
