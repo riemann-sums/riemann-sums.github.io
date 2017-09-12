@@ -64,6 +64,19 @@ class Graph {
         }.bind(this));
     }
 
+    drawGrid(ticks) {
+        if (this.showGrid) {
+            for(var i = 0; i < ticks; i++) {
+                stroke(127, 127);
+                strokeWeight(0.5)
+                    line(this.padding + (this.graphWidth / ticks) * i, this.padding,
+                         this.padding + (this.graphWidth / ticks) * i, height - this.padding);
+                    line(this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks),
+                        width - this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks));
+            }
+        }
+    }
+
     drawAxes(ticks) {
     	stroke(255);
         noFill();
@@ -85,16 +98,7 @@ class Graph {
             // option to show grid lines, default to ticks
             // if ticks == 0 or none is passed, no ticks
             // also need option to show incrs of PI
-            stroke(127, 127);
-            strokeWeight(0.5)
-            if (this.showGrid) {
-                line(this.padding + (this.graphWidth / ticks) * i, this.padding,
-                     this.padding + (this.graphWidth / ticks) * i, height - this.padding);
-                line(this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks),
-                    width - this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks));
-            }
             textSize(8);
-            //noStroke();
             stroke(27, 29, 28);
             strokeWeight(2);
             fill(255);
@@ -224,6 +228,11 @@ class Graph {
 
     getButtons() {
         return this.buttons;
+    }
+
+    setPoints(newPoints) {
+        this.unscaledPoints = newPoints;
+        this.scalePoints();
     }
 
     drawTopBar() {

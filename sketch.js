@@ -2,28 +2,32 @@
 // -[ ] autoscale on window resize
 // -[x] padding around graph
 // -[ ] midpoint sum
-// -[ ] variable function
+// -[x] variable function
 // -[x] simple UI controls, scaling text
 // -[ ] 'usable' on mobile
 // -[ ] comments on parsing code, credit to knexcar
 // -[x] could use noloop(), only redraw on slider change?
 // -[ ] add buttons for changing tick #, type, n, and function
 // -[ ] implement own text entry / dialog for f(x) prompt
-// -[ ] separate grid lines and labels (lines behind, labels in front)
+// -[x] separate grid lines and labels (lines behind, labels in front)
 // -[ ] rewrite hastily crafted button class (pls), dolan suggestions
 // -[ ] readme.md
+// -[ ] fix exta // missing (?) point bug
+// -[ ] display active function
+// -[ ] handle prompt cancel
 
 
 var graph,
     sums,
-    testPoints = [],
+    testPoints,
     mouseHeld = false,
     activeFunction = math.eval("f(x) = " + "0.2 * sin(x) + 0.1 * x");
     // do even need this var? mhm
 
 const ACCURACY = 10000;         // number of points computed
-const MAX_N = 1000;               // max value of the n slider
+const MAX_N = 75;               // max value of the n slider
 const INIT_MAX_X = 2 * Math.PI; // initial graph domain (both min and max)
+const TICKS = 20;
 
 function setup() {	
     createCanvas(windowWidth, windowHeight);
@@ -35,18 +39,19 @@ function setup() {
 }
 
 function draw() {
-    //populatePoints();
     noLoop();
     noSmooth();
     background(27, 29, 28);
+    graph.drawGrid(TICKS);
     graph.drawCurve();
-    graph.drawAxes(20);
     graph.drawTopBar();
     graph.drawActiveSums();
+    graph.drawAxes(TICKS);
 }
 
 function populatePoints() {
     var x;
+    testPoints = [];
     for (var i = 0; i < ACCURACY; i++) {
         x = -INIT_MAX_X + (2 * INIT_MAX_X) * (i / ACCURACY);
         testPoints.push(activeFunction(x));
@@ -85,9 +90,13 @@ function mouseDragged() {
 }
 
 function keyPressed() {
-    var input ="f(x) = " +  prompt("Enter new f(x): ");
-    // need to validate here, regex?
-    activeFunction = math.eval(input);
-    populatePoints();
-
+    if(key == 'x' || key == 'X') {
+        var input ="f(x) = " +  prompt("Enter new f(x): ");
+        // need to validate here, regex?
+        // no need validate
+        activeFunction = math.eval(input);
+        populatePoints();
+        graph.setPoints(testPoints);
+        redraw();
+    }
 }
