@@ -13,7 +13,7 @@ class Sums {
     }
 
     leftHand() {
-        if (this.n === 0) { return 0 };
+        if (this.n === 0) return 0;
         var sum = 0;
         for (var i = 0; i < this.n; i++) {
             sum += this.points[Math.round(i * this.pixelInterval)];
@@ -21,8 +21,17 @@ class Sums {
         return sum * this.dx;
     }
 
+    midpoint() {
+        if (this.n === 0) return 0;
+        var sum = 0;
+        for (var i = 0; i < this.n; i++) {
+            sum += this.points[Math.round(i * this.pixelInterval + this.pixelInterval / 2)];
+        }
+        return sum * this.dx;
+    }
+
     rightHand() {
-        if (this.n === 0) { return 0 };
+        if (this.n === 0) return 0;
         var sum = 0;
         for (var i = 1; i <= this.n; i++) {
             sum += this.points[Math.round(i * this.pixelInterval) - 1];
@@ -31,7 +40,7 @@ class Sums {
     }
 
     trapezoid() {
-        if (this.n === 0) { return 0 };
+        if (this.n === 0) return 0;
         var sum = 0;
         sum += this.points[0];
         sum += this.points[this.points.length - 1];

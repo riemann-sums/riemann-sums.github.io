@@ -39,7 +39,6 @@ class Graph {
         this.controlPanelHeight = height * .03;
         this.buttons = [];
 
-        this.sideBarSize = width * 0.20;
         this.graphWidth = width - this.padding * 2;
         this.graphHeight = height - this.padding * 2;
         this.yScale = (this.graphHeight)/ this.yRange;
@@ -167,6 +166,20 @@ class Graph {
         }
     }
 
+    drawMidpoint() {
+        // need a prettier color here...
+        fill(253, 166, 87, 100);
+        var scaledHeight = 0;
+        var index = 0;
+        for (var i = 0; i < this.n; i++) {
+            index = Math.round(i * this.dx * this.pixelConversion);
+            index += Math.round(this.dx * this.pixelConversion / 2);
+            scaledHeight = this.unscaledPoints[index] * this.yScale;
+               rect(this.padding + i * this.dx, this.points[index],
+                    this.dx, scaledHeight);
+        }
+    }
+
     drawRH() {
         fill(99, 177, 240, 100);
         var scaledHeight = 0;
@@ -201,12 +214,14 @@ class Graph {
     }
 
     drawButtons() {
-        console.log(width/80);
-        // var fontSize = width / 40 < this.padding / 1.5  ?
-        //     width / 40 :
-        //     this.padding / 1.5 ;
         var fontSize = width / 75;
-        //fontSize = fontSize > this.padding / 2
+        if (fontSize > this.padding / 2) {
+            fontSize = this.padding / 2;
+        }
+        else if (fontSize < 8) {
+            fontSize = 8;
+
+        }
         textSize(fontSize);
         fill(255);
         stroke(255);
