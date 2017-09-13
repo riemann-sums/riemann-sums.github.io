@@ -45,6 +45,18 @@ class Slider {
         this.bound();
     }
 
+    setX(x) {
+        this.x = x;
+    }
+
+    setY(y) {
+        this.y = y;
+    }
+
+    setLength(length) {
+        this.length = length;
+    }
+
     getPortion() {
         return (this.handleX - (this.x - this.length / 2)) / this.length;
     }

@@ -10,7 +10,8 @@ Tool for calculating and visualizing Riemann sums for a given function on a give
 - [x] separate grid lines and labels (lines behind, labels in front)
 - [x] readme.md
 - [x] handle prompt cancel
-- [ ] autoscale on window resize
+- [x] autoscale on window resize
+- [x] check for e and pi in entered bounds
 - [ ] fix exta // missing (?) point bug
 - [ ] floating point precision (small #s)
 - [ ] rewrite hastily crafted button class (pls), dolan suggestions

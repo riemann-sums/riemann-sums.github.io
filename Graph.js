@@ -11,19 +11,17 @@
 // than real number values, i.e values should all be scaled to
 // graph size.
 
-// MOVE CONTROLS TO ON TOP OF GRAPH
-
 class Graph {
-    constructor(points, n, minX, maxX, minY, maxY) {
+    constructor(points, n, minX, maxX, minY, maxY, maxN) {
         // could be good to set constants for reused expressions,
         // i.e. yAxis and xAxis and yScale / xScale (this.maxY/this.yRange)
         // would be good to include padding in these constants as well
-
         //SHOULD BE STORING BOUNDS IN AN ARRAY [-X, X, -Y, Y]
         
         this.points = [];
         this.unscaledPoints = points;
         this.n = n;                     // could be 0, updates when setN?
+        this.maxN = maxN;
         this.minX = minX;
         this.maxX = maxX;
         this.minY = minY;
@@ -36,17 +34,19 @@ class Graph {
         this.showGrid = true;
 
         this.padding = 30;
-        this.controlPanelHeight = height * .03;
         this.buttons = [];
 
+        // this block is replicated in resize()
         this.graphWidth = width - this.padding * 2;
         this.graphHeight = height - this.padding * 2;
         this.yScale = (this.graphHeight)/ this.yRange;
+        this.controlPanelHeight = height * .03;
 
         this.dx = this.graphWidth / this.n;    // could be 0, updates when setN?
         this.scalePoints();
         this.createButtons();
         this.pixelConversion = this.points.length / this.graphWidth;
+
         // if there is a seperate UI class, this.slider should be created there
         var sliderLength = this.graphWidth / 5;
         this.slider = new Slider(width - this.padding - sliderLength / 2, this.padding / 2, sliderLength);
@@ -70,10 +70,14 @@ class Graph {
             for(var i = 0; i < ticks; i++) {
                 stroke(127, 127);
                 strokeWeight(0.5)
-                    line(this.padding + (this.graphWidth / ticks) * i, this.padding,
-                         this.padding + (this.graphWidth / ticks) * i, height - this.padding);
-                    line(this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks),
-                        width - this.padding, this.padding + this.graphHeight - i * (this.graphHeight / ticks));
+                    line(this.padding + (this.graphWidth / ticks) * i,
+                         this.padding,
+                         this.padding + (this.graphWidth / ticks) * i,
+                         height - this.padding);
+                    line(this.padding,
+                         this.padding + this.graphHeight - i * (this.graphHeight / ticks),
+                         width - this.padding,
+                         this.padding + this.graphHeight - i * (this.graphHeight / ticks));
             }
         }
     }
@@ -97,9 +101,7 @@ class Graph {
             height - this.padding);
 
         for(var i = 0; i < ticks; i++) {
-            // option to show grid lines, default to ticks
-            // if ticks == 0 or none is passed, no ticks
-            // also need option to show incrs of PI
+            // need option to show incrs of PI
             textSize(8);
             stroke(27, 29, 28);
             strokeWeight(2);
@@ -193,6 +195,7 @@ class Graph {
     }
 
     // likely deserves it's own class eventually
+    // this is pretty silly
     createButtons() {
         var spacing = this.graphWidth / 6;
         var actual = new Button(this.padding, this.padding/ 1.5,
@@ -295,6 +298,25 @@ class Graph {
         rect(0, height - this.padding, width, this.padding);
         this.drawButtons();
         this.slider.draw();
+    }
+
+    resize() {
+        this.controlPanelHeight = height * .03;
+        this.graphWidth = width - this.padding * 2;
+        this.graphHeight = height - this.padding * 2;
+        this.yScale = (this.graphHeight)/ this.yRange;
+        this.dx = this.graphWidth / this.n;
+        this.scalePoints();
+        this.createButtons();
+        this.pixelConversion = this.points.length / this.graphWidth;
+
+        var sliderLength = this.graphWidth / 5;
+        var newX = width - this.padding - sliderLength / 2
+        this.slider.setLength(sliderLength);
+        this.slider.setX(newX);
+        this.slider.setY(this.padding / 2);
+        this.slider.handleX = newX - sliderLength / 2 +
+            (this.n / this.maxN) * sliderLength;
     }
 
     noSubRect(x, y, w, h) {

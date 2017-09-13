@@ -14,7 +14,7 @@ function setup() {
     background(27, 29, 28);
     console.log("f(x): " + activeFunction(2));
     populatePoints(Math.PI, 2*Math.PI);
-    graph = new Graph(testPoints, 0, 2 * Math.PI, 2 * Math.PI, 1, 1);
+    graph = new Graph(testPoints, 0, 2 * Math.PI, 2 * Math.PI, 0.5, 0.5, MAX_N);
 }
 
 function draw() {
@@ -34,7 +34,7 @@ function populatePoints(min, xRange) {
     //var xRange = graph ? graph.xRange : 2 * Math.PI;
 
     testPoints = [];
-    for (var i = 0; i < ACCURACY; i++) {
+    for (var i = 0; i <= ACCURACY; i++) {
         x = -min + (xRange) * (i / ACCURACY);
         testPoints.push(activeFunction(x));
     }
@@ -43,12 +43,23 @@ function populatePoints(min, xRange) {
 function setBounds() {
     console.log("sdfs");
     var test = [10, 10, 1, 1];
-    var input = prompt("Enter -x, +x, -y, and +y bounds separated by spaces: ", graph.getBounds());
+    var input = prompt("Enter -x, +x, -y, and +y bounds separated by spaces: ",
+        graph.getBounds());
     var bounds = input.split(' ');
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 4; i++) {
         if (isNaN(bounds[i])) {
-            console.log("wrang");
-            return;
+            bounds[i] = bounds[i].toLowerCase();
+            if (bounds[i].includes('e')) {
+                bounds[i] = bounds[i].replace('e', Math.E);
+            } 
+            if(bounds[i].includes('pi')) {
+                bounds[i] = bounds[i].replace('pi', Math.PI);
+            }
+            bounds[i] = math.eval(bounds[i]);
+            if (isNaN(bounds[i])) {
+                return;
+            }
+
         }
     }
     graph.setBounds(bounds);
@@ -58,8 +69,9 @@ function setBounds() {
 }
 
 function windowResized() {
-  // resizeCanvas(windowWidth, windowHeight);
-  // redraw();
+  resizeCanvas(windowWidth, windowHeight);
+  graph.resize();
+  redraw();
 }
 
 function mousePressed() {
@@ -97,7 +109,7 @@ function keyPressed() {
             populatePoints(graph.minX, graph.xRange);
             graph.setPoints(testPoints);
             redraw();
-        } // else, some visual error cue... red flash?
+        }
     }
 
     else if (key == ' ') {
