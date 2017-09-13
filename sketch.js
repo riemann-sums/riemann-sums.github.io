@@ -1,41 +1,20 @@
-// TODO: 
-// -[ ] autoscale on window resize
-// -[x] padding around graph
-// -[ ] midpoint sum
-// -[x] variable function
-// -[x] simple UI controls, scaling text
-// -[ ] 'usable' on mobile
-// -[ ] comments on parsing code, credit to knexcar
-// -[x] could use noloop(), only redraw on slider change?
-// -[ ] add buttons for changing tick #, type, n, and function
-// -[ ] implement own text entry / dialog for f(x) prompt
-// -[x] separate grid lines and labels (lines behind, labels in front)
-// -[ ] rewrite hastily crafted button class (pls), dolan suggestions
-// -[ ] readme.md
-// -[ ] fix exta // missing (?) point bug
-// -[ ] display active function
-// -[ ] handle prompt cancel
-
-
 var graph,
     sums,
     testPoints,
     mouseHeld = false,
-    activeFunction = math.eval("f(x) = " + "0.2 * sin(x) + 0.1 * x");
-    // do even need this var? mhm
+    functionString = ".2sin(x)+.1x",
+    activeFunction = math.eval("f(x) = " + functionString);
 
 const ACCURACY = 10000;         // number of points computed
-const MAX_N = 75;               // max value of the n slider
-const INIT_MAX_X = 2 * Math.PI; // initial graph domain (both min and max)
+const MAX_N = 100;               // max value of the n slider
 const TICKS = 20;
 
 function setup() {	
     createCanvas(windowWidth, windowHeight);
     background(27, 29, 28);
     console.log("f(x): " + activeFunction(2));
-
-    populatePoints();
-    graph = new Graph(testPoints, 0, INIT_MAX_X, INIT_MAX_X, 1, 1); 
+    populatePoints(Math.PI, 2*Math.PI);
+    graph = new Graph(testPoints, 0, 2 * Math.PI, 2 * Math.PI, 1, 1);
 }
 
 function draw() {
@@ -44,18 +23,38 @@ function draw() {
     background(27, 29, 28);
     graph.drawGrid(TICKS);
     graph.drawCurve();
-    graph.drawTopBar();
     graph.drawActiveSums();
+    graph.drawTopBar();
     graph.drawAxes(TICKS);
 }
 
-function populatePoints() {
+function populatePoints(min, xRange) {
     var x;
+    //var min = graph ? graph.minX : Math.PI;
+    //var xRange = graph ? graph.xRange : 2 * Math.PI;
+
     testPoints = [];
     for (var i = 0; i < ACCURACY; i++) {
-        x = -INIT_MAX_X + (2 * INIT_MAX_X) * (i / ACCURACY);
+        x = -min + (xRange) * (i / ACCURACY);
         testPoints.push(activeFunction(x));
     }
+}
+
+function setBounds() {
+    console.log("sdfs");
+    var test = [10, 10, 1, 1];
+    var input = prompt("Enter -x, +x, -y, and +y bounds separated by spaces: ", graph.getBounds());
+    var bounds = input.split(' ');
+    for (var i = 0; i < 3; i++) {
+        if (isNaN(bounds[i])) {
+            console.log("wrang");
+            return;
+        }
+    }
+    graph.setBounds(bounds);
+    populatePoints(graph.minX, graph.xRange);
+    graph.setPoints(testPoints);
+    redraw();
 }
 
 function windowResized() {
@@ -91,12 +90,17 @@ function mouseDragged() {
 
 function keyPressed() {
     if(key == 'x' || key == 'X') {
-        var input ="f(x) = " +  prompt("Enter new f(x): ");
-        // need to validate here, regex?
-        // no need validate
-        activeFunction = math.eval(input);
-        populatePoints();
-        graph.setPoints(testPoints);
-        redraw();
+        var userInput = prompt("Enter new f(x): ", functionString);
+        if (userInput !== null) {
+            functionString = userInput;
+            activeFunction = math.eval("f(x) = " + functionString);
+            populatePoints(graph.minX, graph.xRange);
+            graph.setPoints(testPoints);
+            redraw();
+        } // else, some visual error cue... red flash?
+    }
+
+    else if (key == ' ') {
+        setBounds();
     }
 }

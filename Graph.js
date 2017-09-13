@@ -18,6 +18,8 @@ class Graph {
         // could be good to set constants for reused expressions,
         // i.e. yAxis and xAxis and yScale / xScale (this.maxY/this.yRange)
         // would be good to include padding in these constants as well
+
+        //SHOULD BE STORING BOUNDS IN AN ARRAY [-X, X, -Y, Y]
         
         this.points = [];
         this.unscaledPoints = points;
@@ -48,7 +50,7 @@ class Graph {
         this.pixelConversion = this.points.length / this.graphWidth;
         // if there is a seperate UI class, this.slider should be created there
         var sliderLength = this.graphWidth / 5;
-        this.slider = new Slider(width - this.padding - sliderLength / 2, this.padding/2, sliderLength);
+        this.slider = new Slider(width - this.padding - sliderLength / 2, this.padding / 2, sliderLength);
         this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
     }
 
@@ -60,7 +62,7 @@ class Graph {
 
     scalePoints() {
         this.points = this.unscaledPoints.map(function (pt) {
-            return  height * this.yAxisRatio - (pt * this.yScale);
+            return  this.padding + this.graphHeight * this.yAxisRatio - (pt * this.yScale);
         }.bind(this));
     }
 
@@ -85,8 +87,9 @@ class Graph {
             this.graphWidth, height - 2 * this.padding);
         
         // X axis 
-        line(this.padding, height * this.yAxisRatio,
-            this.graphWidth + this.padding, height * this.yAxisRatio);
+        line(this.padding, this.graphHeight * this.yAxisRatio + this.padding,
+            width - this.padding,
+            this.graphHeight * this.yAxisRatio + this.padding)
         
         // Y axis 
         line(width - this.padding - (this.graphWidth * (this.maxX / this.xRange)),
@@ -106,7 +109,7 @@ class Graph {
             // X axis 
                 text(this.roundTo(-this.minX + (i * (this.xRange / ticks)), 3), 
                 this.padding + (this.graphWidth / ticks) * i,
-                height * this.yAxisRatio - 5);
+                this.padding + this.graphHeight * this.yAxisRatio - 5);
 
             // Y axis 
             text(this.roundTo(-this.minY + (i * (this.yRange / ticks)), 3), 
@@ -135,7 +138,7 @@ class Graph {
     }
 
     drawTrapezoid() {
-        fill(213, 96, 97, 127);
+        fill(213, 96, 97, 100);
         var scaledHeight = 0;
         var index = 0;
         var nextIndex = 0;
@@ -145,32 +148,34 @@ class Graph {
 
             quad(this.padding + (i + 1) * this.dx, this.points[nextIndex],
                 this.padding + i * this.dx, this.points[index],
-                this.padding + i * this.dx, height * this.yAxisRatio,
-                this.padding + (i + 1) * this.dx, height * this.yAxisRatio); // :c
+                this.padding + i * this.dx,
+                this.graphHeight * this.yAxisRatio + this.padding,
+                this.padding + (i + 1) * this.dx,
+                this.graphHeight * this.yAxisRatio + this.padding); // :c
         }
     }
 
     drawLH() {
-        fill(174, 137, 213, 127);
+        fill(174, 137, 213, 100);
         var scaledHeight = 0;
         var index = 0;
         for (var i = 0; i < this.n; i++) {
             index = Math.round(i * this.dx * this.pixelConversion);
             scaledHeight = this.unscaledPoints[index] * this.yScale;
-            rect(this.padding + i * this.dx, this.points[index],
-                 this.dx, scaledHeight);
+               rect(this.padding + i * this.dx, this.points[index],
+                    this.dx, scaledHeight);
         }
     }
 
     drawRH() {
-        fill(99, 177, 240, 127);
+        fill(99, 177, 240, 100);
         var scaledHeight = 0;
         var index = 0;
         for (var i = 1; i < this.n + 1; i++) {
             index = Math.round(i * this.dx * this.pixelConversion);
             scaledHeight = this.unscaledPoints[index - 1] * this.yScale;
-            rect(this.padding + i * this.dx, this.points[index - 1],
-                 -this.dx, scaledHeight);
+                 rect(this.padding + i * this.dx, this.points[index - 1],
+                     -this.dx, scaledHeight);
         }
     }
 
@@ -196,7 +201,13 @@ class Graph {
     }
 
     drawButtons() {
-        textSize(width/63);
+        console.log(width/80);
+        // var fontSize = width / 40 < this.padding / 1.5  ?
+        //     width / 40 :
+        //     this.padding / 1.5 ;
+        var fontSize = width / 75;
+        //fontSize = fontSize > this.padding / 2
+        textSize(fontSize);
         fill(255);
         stroke(255);
         strokeWeight(0);
@@ -226,16 +237,47 @@ class Graph {
         });
     }
 
+    // Accepts an unsigned array of values,
+    // -x, +x, -y, +y
+    setBounds(bounds) {
+        this.minX = Math.abs(bounds[0]);
+        this.maxX = Math.abs(bounds[1])
+        this.minY = Math.abs(bounds[2]);
+        this.maxY = Math.abs(bounds[3]);
+        this.xRange = (this.minX + this.maxX);
+        this.yRange = (this.minY + this.maxY);
+
+        this.yAxisRatio = this.maxY / this.yRange;
+        this.yScale = (this.graphHeight)/ this.yRange;
+
+        // can just setxrange
+        // need new points for sure
+        this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
+        this.scalePoints();
+    }
+
     getButtons() {
         return this.buttons;
+    }
+
+    getBounds() {
+        return this.minX + " " + this.maxX + " " + this.minY + " " + this.maxY;
     }
 
     setPoints(newPoints) {
         this.unscaledPoints = newPoints;
         this.scalePoints();
+        console.log(this.points);
+        this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
     }
 
     drawTopBar() {
+        // also redraws area above and below graph to cover any sums drawn
+        // outside of the graph view... hacky....
+        fill(27, 29, 28);
+        noStroke();
+        rect(0, 0, width, this.padding);
+        rect(0, height - this.padding, width, this.padding);
         this.drawButtons();
         this.slider.draw();
     }
