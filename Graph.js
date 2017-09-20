@@ -11,6 +11,8 @@
 // than real number values, i.e values should all be scaled to
 // graph size.
 
+// If y axis would be drawn outside of graph window, draw it on the left side
+
 class Graph {
     constructor(points, n, minX, maxX, minY, maxY, maxN) {
         // could be good to set constants for reused expressions,
@@ -27,8 +29,8 @@ class Graph {
         this.minY = minY;
         this.maxY = maxY;
 
-    	this.xRange = (minX + maxX);
-    	this.yRange = (minY + maxY);
+    	this.xRange = Math.abs(this.minX) + Math.abs(this.maxX);
+        this.yRange = Math.abs(this.minY) + Math.abs(this.maxY);
 
         this.yAxisRatio = this.maxY / this.yRange;
         this.showGrid = true;
@@ -108,12 +110,13 @@ class Graph {
             fill(255);
 
             // X axis 
-                text(this.roundTo(-this.minX + (i * (this.xRange / ticks)), 3), 
+                text(this.roundTo(this.minX + (i * (this.xRange / ticks)), 3), 
                 this.padding + (this.graphWidth / ticks) * i,
                 this.padding + this.graphHeight * this.yAxisRatio - 5);
 
             // Y axis 
-            text(this.roundTo(-this.minY + (i * (this.yRange / ticks)), 3), 
+            console.log(this.minY + (i * (this.yRange / ticks)));
+            text(this.roundTo(this.minY + (i * (this.yRange / ticks)), 3), 
                 width - this.padding - this.graphWidth * (this.maxX / this.xRange) + 5,
                 this.padding + this.graphHeight - i * (this.graphHeight / ticks));
         }
@@ -255,15 +258,20 @@ class Graph {
         });
     }
 
-    // Accepts an unsigned array of values,
-    // -x, +x, -y, +y
+    // Accepts a signed array of values,
+    // -x, +x, -y, +y,
+    // errors when invalid bounds
     setBounds(bounds) {
-        this.minX = Math.abs(bounds[0]);
-        this.maxX = Math.abs(bounds[1])
-        this.minY = Math.abs(bounds[2]);
-        this.maxY = Math.abs(bounds[3]);
-        this.xRange = (this.minX + this.maxX);
-        this.yRange = (this.minY + this.maxY);
+        this.minX = bounds[0];
+        this.maxX = bounds[1];
+        this.minY = bounds[2];
+        this.maxY = bounds[3];
+        this.xRange = Math.abs(this.minX) + Math.abs(this.maxX);
+        this.yRange = Math.abs(this.minY) + Math.abs(this.maxY);
+        console.log("minX: " + this.minX);
+        console.log("minY: " + this.minY);
+        console.log("maxX: " + this.maxX);
+        console.log("maxY: " + this.maxY);
 
         this.yAxisRatio = this.maxY / this.yRange;
         this.yScale = (this.graphHeight)/ this.yRange;

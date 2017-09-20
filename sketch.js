@@ -14,7 +14,7 @@ function setup() {
     background(27, 29, 28);
     console.log("f(x): " + activeFunction(2));
     populatePoints(Math.PI, 2*Math.PI);
-    graph = new Graph(testPoints, 0, 2 * Math.PI, 2 * Math.PI, 0.5, 0.5, MAX_N);
+    graph = new Graph(testPoints, 0, -2 * Math.PI, 2 * Math.PI, -0.5, 0.5, MAX_N);
 }
 
 function draw() {
@@ -41,7 +41,6 @@ function populatePoints(min, xRange) {
 }
 
 function setBounds() {
-    console.log("sdfs");
     var test = [10, 10, 1, 1];
     var input = prompt("Enter -x, +x, -y, and +y bounds separated by spaces: ",
         graph.getBounds());
@@ -51,9 +50,11 @@ function setBounds() {
             bounds[i] = bounds[i].toLowerCase();
             if (bounds[i].includes('e')) {
                 bounds[i] = bounds[i].replace('e', Math.E);
-            } 
+                // if Xe, replace with "*Math.E"
+            }
             if(bounds[i].includes('pi')) {
                 bounds[i] = bounds[i].replace('pi', Math.PI);
+                // if Xpi, replace with "*Math.PI"
             }
             bounds[i] = math.eval(bounds[i]);
             if (isNaN(bounds[i])) {
