@@ -1,14 +1,11 @@
-// Currently, max n === length of points array
-// should points array be standard length regardless of
-// width? seems trivial, 1px per points offer enoguh accuacy
 'use strict'
 
 class Sums {
-    constructor(n, points, xRange) {
+    constructor(n, points, domain) {
         this.n = n;
         this.points = points;
-        this.xRange = xRange;
-        this.dx = this.xRange / n;
+        this.domain = domain;
+        this.dx = this.domain / n;
         this.pixelInterval = points.length / n;
     }
 
@@ -54,7 +51,7 @@ class Sums {
 
     actual() {
         var initValue = this.points[0] + this.points[this.points.length - 1];
-        var dx = this.xRange / this.points.length;
+        var dx = this.domain / this.points.length;
         return (dx/ 2) * this.points.reduce(function (sum, point) {
             return sum + 2 * point;
         }, initValue);
@@ -62,7 +59,7 @@ class Sums {
     
     setN(n) {
         this.n = n; 
-        this.dx = this.xRange / n
+        this.dx = this.domain / n
         this.pixelInterval = this.points.length / n;
     }
 }

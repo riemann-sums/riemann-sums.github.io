@@ -14,7 +14,7 @@
 class Graph {
     constructor(points, n, minX, maxX, minY, maxY, maxN) {
         // could be good to set constants for reused expressions,
-        // i.e. yAxis and xAxis and yScale / xScale (this.maxY/this.yRange)
+        // i.e. yAxis and xAxis and yScale / xScale (this.maxY/this.range)
         // would be good to include padding in these constants as well
 
         // SHOULD BE STORING BOUNDS IN AN ARRAY [-X, X, -Y, Y]... maybe not?
@@ -29,11 +29,11 @@ class Graph {
         this.maxX = maxX;
         this.minY = minY;
         this.maxY = maxY;
-        this.xRange = this.maxX - this.minX;
-        this.yRange = this.maxY - this.minY;
+        this.domain = this.maxX - this.minX;
+        this.range = this.maxY - this.minY;
 
-        this.yAxisRatio = this.maxY / this.yRange;
-        this.xAxisRatio = this.maxX / this.xRange;
+        this.yAxisRatio = this.maxY / this.range;
+        this.xAxisRatio = this.maxX / this.domain;
         this.showGrid = true;
 
         this.padding = 30;
@@ -42,7 +42,7 @@ class Graph {
         // this block is replicated in resize()
         this.graphWidth = width - this.padding * 2;
         this.graphHeight = height - this.padding * 2;
-        this.yScale = (this.graphHeight)/ this.yRange;
+        this.yScale = (this.graphHeight)/ this.range;
         this.controlPanelHeight = height * .03;
 
         this.dx = this.graphWidth / this.n;
@@ -53,7 +53,7 @@ class Graph {
         // if there is a seperate UI class, this.slider should be created there
         var sliderLength = this.graphWidth / 5;
         this.slider = new Slider(width - this.padding - sliderLength / 2, this.padding / 2, sliderLength);
-        this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
+        this.sums = new Sums(this.n, this.unscaledPoints, this.domain);
     }
 
     setN(n) {
@@ -73,14 +73,14 @@ class Graph {
             for(var i = 0; i < ticks; i++) {
                 stroke(127, 127);
                 strokeWeight(0.5)
-                    line(this.padding + (this.graphWidth / ticks) * i,
-                         this.padding,
-                         this.padding + (this.graphWidth / ticks) * i,
-                         height - this.padding);
-                    line(this.padding,
-                         this.padding + this.graphHeight - i * (this.graphHeight / ticks),
-                         width - this.padding,
-                         this.padding + this.graphHeight - i * (this.graphHeight / ticks));
+                line(this.padding + (this.graphWidth / ticks) * i,
+                     this.padding,
+                     this.padding + (this.graphWidth / ticks) * i,
+                     height - this.padding);
+                line(this.padding,
+                     this.padding + this.graphHeight - i * (this.graphHeight / ticks),
+                     width - this.padding,
+                     this.padding + this.graphHeight - i * (this.graphHeight / ticks));
             }
         }
     }
@@ -106,14 +106,16 @@ class Graph {
         
         // Y axis 
         if (yAxisVisible) {
-            line(width - this.padding - (this.graphWidth * (this.maxX / this.xRange)),
+            line(width - this.padding - (this.graphWidth * (this.maxX / this.domain)),
                 this.padding,
-                width - this.padding - (this.graphWidth * (this.maxX / this.xRange)),
+                width - this.padding - (this.graphWidth * (this.maxX / this.domain)),
                 height - this.padding);
         }
 
         for(var i = 0; i < ticks; i++) {
             // need option to show incrs of PI
+            // need to use TEXT WIDTH here instead of just guessing, font size
+            // should not be considered constant / guarenteed
             textSize(8);
             stroke(27, 29, 28);
             strokeWeight(2);
@@ -121,26 +123,24 @@ class Graph {
 
             // X axis 
             if (!xAxisVisible) {
-                text(this.roundTo(this.minX + (i * (this.xRange / ticks)), 3),
+                text(this.roundTo(this.minX + (i * (this.domain / ticks)), 3),
                     this.padding + (this.graphWidth / ticks) * i,
                     this.padding + this.graphHeight + 8);
 
             } else {
-                text(this.roundTo(this.minX + (i * (this.xRange / ticks)), 3),
+                text(this.roundTo(this.minX + (i * (this.domain / ticks)), 3),
                     this.padding + (this.graphWidth / ticks) * i,
                     this.padding + this.graphHeight * this.yAxisRatio + 8);
             }
 
             // Y axis 
-            // need to use TEXT WIDTH here instead of just guessing, font size
-            // is not guarenteed
             if (!yAxisVisible) {
-                text(this.roundTo(this.minY + (i * (this.yRange / ticks)), 3),
+                text(this.roundTo(this.minY + (i * (this.range / ticks)), 3),
                     this.padding - 15,
                     this.padding + this.graphHeight - i * (this.graphHeight / ticks));
             } else {
-                text(this.roundTo(this.minY + (i * (this.yRange / ticks)), 3), 
-                    width - this.padding - this.graphWidth * (this.maxX / this.xRange) - 15,
+                text(this.roundTo(this.minY + (i * (this.range / ticks)), 3), 
+                    width - this.padding - this.graphWidth * (this.maxX / this.domain) - 15,
                     this.padding + this.graphHeight - i * (this.graphHeight / ticks));
             }
         }
@@ -294,16 +294,16 @@ class Graph {
         this.maxX = bounds[1];
         this.minY = bounds[2];
         this.maxY = bounds[3];
-        this.xRange = this.maxX - this.minX;
-        this.yRange = this.maxY - this.minY;
+        this.domain = this.maxX - this.minX;
+        this.range = this.maxY - this.minY;
 
-        this.yAxisRatio = this.maxY / this.yRange;
-        this.xAxisRatio = this.maxX / this.xRange;
-        this.yScale = (this.graphHeight)/ this.yRange;
+        this.yAxisRatio = this.maxY / this.range;
+        this.xAxisRatio = this.maxX / this.domain;
+        this.yScale = (this.graphHeight)/ this.range;
 
-        // can just set xRange instead of creating new sums object (?)
+        // can just set domain instead of creating new sums object (?)
         // need new points for sure
-        this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
+        this.sums = new Sums(this.n, this.unscaledPoints, this.domain);
         this.scalePoints();
     }
 
@@ -318,7 +318,7 @@ class Graph {
     setPoints(newPoints) {
         this.unscaledPoints = newPoints;
         this.scalePoints();
-        this.sums = new Sums(this.n, this.unscaledPoints, this.xRange);
+        this.sums = new Sums(this.n, this.unscaledPoints, this.domain);
     }
 
     drawTopBar() {
@@ -336,7 +336,7 @@ class Graph {
         this.controlPanelHeight = height * .03;
         this.graphWidth = width - this.padding * 2;
         this.graphHeight = height - this.padding * 2;
-        this.yScale = (this.graphHeight)/ this.yRange;
+        this.yScale = (this.graphHeight)/ this.range;
         this.dx = this.graphWidth / this.n;
         this.scalePoints();
         this.createButtons();

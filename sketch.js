@@ -28,12 +28,12 @@ function draw() {
     graph.drawAxes(TICKS);
 }
 
-function populatePoints(min, xRange) {
+function populatePoints(min, domain) {
     var x;
     testPoints = [];
 
     for (var i = 0; i <= ACCURACY; i++) {
-        x = min + (xRange) * (i / ACCURACY);
+        x = min + (domain) * (i / ACCURACY);
         testPoints.push(activeFunction(x));
     }
 }
@@ -60,7 +60,7 @@ function setBounds() {
 
         }
     }
-    populatePoints(bounds[0], bounds[1] - bounds[0]);
+    populatePoints(parseFloat(bounds[0]), parseFloat(bounds[1] - bounds[0]));
     graph.setPoints(testPoints);
     graph.setBounds(bounds);
     redraw();
@@ -104,7 +104,7 @@ function keyPressed() {
         if (userInput !== null) {
             functionString = userInput;
             activeFunction = math.eval("f(x) = " + functionString);
-            populatePoints(graph.minX, graph.xRange);
+            populatePoints(graph.minX, graph.domain);
             graph.setPoints(testPoints);
             redraw();
         }
