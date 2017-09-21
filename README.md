@@ -13,6 +13,8 @@ Tool for calculating and visualizing Riemann sums for a given function on a give
 - [x] autoscale on window resize
 - [x] check for e and pi in entered bounds
 - [x] fix exta // missing (?) point bug
+- [ ] rename xRange/yRange to domain/range
+- [ ] validation for bounds and f(x) input
 - [ ] floating point precision (small #s)
 - [ ] change bound entry to signed values, allow for [+a, +b] and [-a, -b]
 - [ ] rewrite hastily crafted button class (pls), dolan suggestions
@@ -21,3 +23,4 @@ Tool for calculating and visualizing Riemann sums for a given function on a give
 - [ ] 'usable' on mobile
 - [ ] display active function
 - [ ] draw labels inside of graph view
+- [ ] line length...

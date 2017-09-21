@@ -2,19 +2,19 @@ var graph,
     sums,
     testPoints,
     mouseHeld = false,
-    functionString = ".2sin(x)+.1x",
+    functionString = "sin(x)",
     activeFunction = math.eval("f(x) = " + functionString);
 
 const ACCURACY = 10000;         // number of points computed
-const MAX_N = 100;               // max value of the n slider
+const MAX_N = 100;              // max value of the n slider
 const TICKS = 20;
+const INIT_DOMAIN = 2 * Math.PI;
 
 function setup() {	
     createCanvas(windowWidth, windowHeight);
     background(27, 29, 28);
-    console.log("f(x): " + activeFunction(2));
-    populatePoints(Math.PI, 2*Math.PI);
-    graph = new Graph(testPoints, 0, -2 * Math.PI, 2 * Math.PI, -0.5, 0.5, MAX_N);
+    populatePoints(0, INIT_DOMAIN);
+    graph = new Graph(testPoints, 0, 0, INIT_DOMAIN, -1, 1, MAX_N);
 }
 
 function draw() {
@@ -30,18 +30,15 @@ function draw() {
 
 function populatePoints(min, xRange) {
     var x;
-    //var min = graph ? graph.minX : Math.PI;
-    //var xRange = graph ? graph.xRange : 2 * Math.PI;
-
     testPoints = [];
+
     for (var i = 0; i <= ACCURACY; i++) {
-        x = -min + (xRange) * (i / ACCURACY);
+        x = min + (xRange) * (i / ACCURACY);
         testPoints.push(activeFunction(x));
     }
 }
 
 function setBounds() {
-    var test = [10, 10, 1, 1];
     var input = prompt("Enter -x, +x, -y, and +y bounds separated by spaces: ",
         graph.getBounds());
     var bounds = input.split(' ');
@@ -63,9 +60,9 @@ function setBounds() {
 
         }
     }
-    graph.setBounds(bounds);
-    populatePoints(graph.minX, graph.xRange);
+    populatePoints(bounds[0], bounds[1] - bounds[0]);
     graph.setPoints(testPoints);
+    graph.setBounds(bounds);
     redraw();
 }
 
