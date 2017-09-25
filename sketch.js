@@ -60,10 +60,27 @@ function setBounds() {
 
         }
     }
-    populatePoints(parseFloat(bounds[0]), parseFloat(bounds[1] - bounds[0]));
-    graph.setPoints(testPoints);
-    graph.setBounds(bounds);
-    redraw();
+    // bad or good? the world may never know...
+    // need to do this after checking NaN and replacing constants
+    bounds = bounds.map(function (bound) {
+        return parseFloat(bound);
+    });
+    if (validBounds(bounds)) {
+        populatePoints(bounds[0], bounds[1] - bounds[0]);
+        graph.setPoints(testPoints);
+        graph.setBounds(bounds);
+        redraw();
+    } else {
+        console.log("Invalid bounds ya dingus!");
+    }
+}
+
+function validBounds(bounds) {
+    // if (bounds[0] >= bounds[1] || bounds[2] >= bounds[3]) {
+    //     return false;
+    // }
+    // return true;
+    return bounds[0] < bounds[1] && bounds[2] < bounds[3];
 }
 
 function windowResized() {

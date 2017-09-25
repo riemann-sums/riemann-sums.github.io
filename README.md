@@ -14,9 +14,9 @@ Tool for calculating and visualizing Riemann sums for a given function on a give
 - [x] check for e and pi in entered bounds
 - [x] fix exta // missing (?) point bug
 - [x] change bound entry to signed values, allow for [+a, +b] and [-a, -b]
-- [ ] rename domain/range to domain/range
-- [ ] validation for bounds and f(x) input
+- [x] rename domain/range to domain/range
 - [ ] floating point precision (small #s)
+- [ ] validation for bounds and f(x) input
 - [ ] rewrite hastily crafted button class (pls), dolan suggestions
 - [ ] add buttons for changing tick #, type, n, and function
 - [ ] implement own text entry / dialog for f(x) prompt

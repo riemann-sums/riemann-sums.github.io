@@ -286,10 +286,6 @@ class Graph {
     // -x, +x, -y, +y,
     // errors when invalid bounds
     setBounds(bounds) {
-        // bad or good? the world may never know...
-        bounds = bounds.map(function (bound) {
-            return parseFloat(bound);
-        });
         this.minX = bounds[0];
         this.maxX = bounds[1];
         this.minY = bounds[2];
