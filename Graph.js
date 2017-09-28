@@ -229,13 +229,13 @@ class Graph {
             "actual: ", () => { return this.roundTo(this.sums.actual(), 5)});
 
         var leftHand = new Button(this.padding + 1 * spacing, this.padding/ 1.5,
-            "LH: ", () => { return this.roundTo(this.sums.leftHand(), 5)}, true);
+            "LH: ", () => { return this.roundTo(this.sums.leftHand(), 9)}, true);
 
         var rightHand = new Button(this.padding + 2 * spacing, this.padding/ 1.5,
-            "RH: ", () => { return this.roundTo(this.sums.rightHand(), 5)}, true);
+            "RH: ", () => { return this.roundTo(this.sums.rightHand(), 9)}, true);
 
         var trapezoid = new Button(this.padding + 3 * spacing, this.padding/ 1.5,
-            "T: ", () => { return this.roundTo(this.sums.trapezoid(), 5)}, true);
+            "T: ", () => { return this.roundTo(this.sums.trapezoid(), 9)}, true);
 
         var n = new Button(this.padding + 4 * spacing, this.padding/ 1.5,
             "n: ", () => { return this.n});
