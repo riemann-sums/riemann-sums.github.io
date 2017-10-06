@@ -11,6 +11,7 @@
 // than real number values, i.e values should all be scaled to
 // graph size.
 
+// Maybe draw points and lines? could help abate missing line segments
 class Graph {
     constructor(points, n, minX, maxX, minY, maxY, maxN) {
         // could be good to set constants for reused expressions,
