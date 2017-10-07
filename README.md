@@ -1,5 +1,5 @@
 # Riemann Sums Visualization
-Tool for calculating and visualizing Riemann sums for a given function on a given bound.
+Tool for calculating and visualizing Riemann sums for a given function on a given bound. This project is meant to be a tool for students, teachers, and math nerds like me to explore and play with Riemann sums.
 
 ## To-do:
 - [x] padding around graph
@@ -17,11 +17,13 @@ Tool for calculating and visualizing Riemann sums for a given function on a give
 - [x] rename xRange/yRange to domain/range
 - [x] add buttons for changing tick #, type, n, and function
 - [x] draw labels inside of graph view
+- [x] validation for bounds and f(x) input
+- [x] display active function
+- [x] menu entries shouldn't close menu when prompt is canceled (see bounds)
+- [x] rewrite hastily crafted button class (pls)
+- [ ] sum buttons should be pushed to left, with a standard space inbetween
 - [ ] floating point precision (small #s) [detect magnitude on bound entry?]
-- [ ] validation for bounds and f(x) input
-- [ ] rewrite hastily crafted button class (pls), dolan suggestions
+- [ ] dolan suggestions
 - [ ] implement own text entry / dialog for f(x) prompt
 - [ ] 'usable' on mobile
-- [ ] display active function
-- [ ] menu entries shouldn't close menu when prompt is canceled (see bounds)
 - [ ] line length...

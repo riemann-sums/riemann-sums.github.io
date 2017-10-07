@@ -17,10 +17,6 @@ class Graph {
         // could be good to set constants for reused expressions,
         // i.e. yAxis and xAxis and yScale / xScale (this.maxY/this.range)
         // would be good to include padding in these constants as well
-
-        // SHOULD BE STORING BOUNDS IN AN ARRAY [-X, X, -Y, Y]... maybe not?
-        // really only need domain and range to have names, other cases can use
-        // bounds[0], bounds[1] etc.
         
         this.points = [];
         this.unscaledPoints = points;
@@ -115,24 +111,13 @@ class Graph {
 
         for(var i = 0; i < ticks; i++) {
             // need option to show incrs of PI (?)
-            // method shrinkFont(string, fontSize, maxWidth)
-            // a while loop that decrs font until it will fit in a
-            // given width, then returns that target font size
-            // THIS IS ACTUALLY BAD
-            // font size should be unifom, what the method should do
-            // is truncate the actual text to be displated if it is
-            // too long to fit in the alloted tick space
-            // very weird bug when ticks is one.. set a min of 2 ;)
-            // has to do with button class, somehow ticks is affecting
-            // the untruncated length of the sums? to the point where
-            // clicking the slider toggles all three
             var fontSize = Math.round((this.graphWidth / ticks) / 5);
             var maxSize = Math.round((0.0333 * this.graphWidth));
             fontSize = fontSize > maxSize ? maxSize : fontSize;
             textSize(fontSize);
             stroke(27, 29, 28);
-            strokeWeight(3);
-            fill(255);
+            strokeWeight(2);
+            fill(255, 200);
 
             // X axis 
             if (!xAxisVisible) {
@@ -234,8 +219,6 @@ class Graph {
         }
     }
 
-    // likely deserves it's own class eventually
-    // this is pretty silly
     createButtons() {
         var spacing = this.graphWidth / 6;
         var actual = new Button(this.padding, this.padding/ 1.5,
@@ -257,18 +240,6 @@ class Graph {
     }
 
     drawButtons() {
-        var fontSize = width / 75;
-        if (fontSize > this.padding / 2) {
-            fontSize = this.padding / 2;
-        }
-        else if (fontSize < 8) {
-            fontSize = 8;
-
-        }
-        textSize(fontSize);
-        fill(255);
-        stroke(255);
-        strokeWeight(0);
         this.buttons.forEach(function (button) {
             button.draw();
         });
@@ -332,9 +303,13 @@ class Graph {
 
     setMaxN(max) {
         this.maxN = max;
+        if (this.maxN < this.n) {
+            this.setN(this.maxN);
+        }
         this.resize();
     }
 
+    // shoud be called drawUIElements
     drawTopBar() {
         // also redraws area above and below graph to cover any sums drawn
         // outside of the graph view... hacky....
@@ -344,6 +319,19 @@ class Graph {
         rect(0, height - this.padding, width, this.padding);
         this.drawButtons();
         this.slider.draw();
+    }
+
+    drawActiveFunction(functionString) {
+        noStroke();
+        rectMode(CENTER);
+        textAlign(CENTER);
+        textSize(this.padding / 2);
+        fill(27, 29, 28, 200);
+        rect(width / 2, height - this.padding / 2.1, textWidth(functionString), this.padding, 5);
+        fill(213, 96, 97);
+        text(functionString, width / 2, height - this.padding / 3);
+        textAlign(LEFT);
+        rectMode(CORNER);
     }
 
     resize() {

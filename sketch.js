@@ -14,10 +14,8 @@ var graph,
 const ACCURACY = 10000;         // number of points computed
 const INIT_DOMAIN = 2 * Math.PI;
 
-// no longer constants, should not be ALL_CAPS
-var TICKS = 20;
-var MAX_N = 100;             // max value of the n slider
-
+var ticks = 20;
+var maxN = 100;             // max value of the n slider
 var menuEntries = [];
 
 // can check for mouse movement, highlight menu entry and redraw without
@@ -28,14 +26,9 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     background(27, 29, 28);
     populatePoints(0, INIT_DOMAIN);
-    graph = new Graph(testPoints, 0, 0, INIT_DOMAIN, -1, 1, MAX_N);
-    // callbacks here should return a value
-    // true if valid input, false if not
-    // if false, dont close menu, error animation
-    // transparent red circle, inflates under menu
-    // as opacity decreases
+    graph = new Graph(testPoints, 0, 0, INIT_DOMAIN, -1, 1, maxN);
     menuButtonX = width - graph.padding / 2;
-    menuButtonY = 5 + graph.padding / 2;
+    menuButtonY = height - 5 - graph.padding / 2;
     menuEntries = [
         {
             name: 'f(x)',
@@ -68,11 +61,12 @@ function draw() {
     noLoop();
     noSmooth();
     background(27, 29, 28);
-    graph.drawGrid(TICKS);
+    graph.drawGrid(ticks);
     graph.drawCurve();
     graph.drawActiveSums();
     graph.drawTopBar();
-    graph.drawAxes(TICKS);
+    graph.drawAxes(ticks);
+    graph.drawActiveFunction(functionString);
     drawMenuIcon(menuButtonX, menuButtonY);
     if (menuActive) {
         drawMenu();
@@ -140,20 +134,17 @@ function newPrompt(cb, init) {
 }
 
 function drawMenu() {
-    // no need for other var here...
-    // OR font size var
-    entries = menuEntries;
+    // these can be attrs of menuEntries?
     var entryHeight = height / 20;  
     var w = width / 4;
-    var h = entryHeight * entries.length;
+    var h = entryHeight * menuEntries.length;
     var entryId = 0;
-    var entryFontSize = entryHeight / 2;
     fill(27, 29, 28, 200);
     rectMode(CENTER);
     noStroke();
     rect(width / 2, height / 2, w , h);
-    textSize(entryFontSize);
-    entries.forEach(function (entry) {
+    textSize(entryHeight / 2);
+    menuEntries.forEach(function (entry) {
         noFill();
         stroke(255);
         strokeWeight(1);
@@ -195,8 +186,7 @@ function setBounds() {
 
         }
     }
-    // bad or good? the world may never know...
-    // need to do this after checking NaN and replacing constants
+
     bounds = bounds.map(function (bound) {
         return parseFloat(bound);
     });
@@ -205,8 +195,10 @@ function setBounds() {
         graph.setPoints(testPoints);
         graph.setBounds(bounds);
         redraw();
+        return true;
     } else {
         console.log("Invalid bounds ya dingus!");
+        return false;
     }
 }
 
@@ -220,15 +212,20 @@ function setFunction() {
             populatePoints(graph.minX, graph.domain);
             graph.setPoints(testPoints);
             redraw();
+            return true;
         }
+        return false;
     }
+    return false;
 }
 
 function setTicks() {
-    var userInput = parseInt(prompt("Enter # ticks: ", TICKS));
+    var userInput = parseInt(prompt("Enter # ticks: ", ticks));
     if (!isNaN(userInput)) {
-        TICKS = userInput;
+        ticks = userInput <= 100 ? userInput : 100;
+        return true;
     }
+    return false;
 }
 
 function setTickSize() {
@@ -239,21 +236,24 @@ function setMaxN() {
     var max = parseInt(prompt("Enter max n: ", graph.maxN));
     if (!isNaN(max)) {
         max = max > 10000 ? 10000 : max;
-        MAX_N = max;
+        maxN = max;
         graph.setMaxN(max);
+        redraw();
+        return true;
     }
+    return false;
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     graph.resize();
     menuButtonX = width - graph.padding / 2;
-    menuButtonY = 5 + graph.padding / 2;
+    menuButtonY = height - 5 - graph.padding / 2;
     redraw();
 }
 
 function drawMenuIcon (x, y) {
-    var dotSize = graph.padding / 5;
+    var dotSize = graph.padding / 6;
     var iconSize = graph.padding - 5;
     fill (255, 100);
     noStroke();
@@ -270,16 +270,18 @@ function mousePressed() {
     if (menuActive) {
         var entryHeight = height / 20;  
         var w = width / 4;
-        var h = entryHeight * Object.keys(entries).length;
+        var h = entryHeight * Object.keys(menuEntries).length;
         menuEntries.forEach(function (entry, index) {
             if (mouseX > width / 2 - (w / 2) &&
                 mouseX < width / 2 + (w /2) &&
                 mouseY < height / 2 - (h / 2) + (entryHeight * (index + 1)) && 
                 mouseY > height / 2 - (h / 2) + (entryHeight * index)) {
 
-            entry.cb();
-            menuActive = false;
-            redraw();
+            var success = entry.cb();
+            if (success === true || success === undefined) {
+                menuActive = false;
+                redraw();
+            }
 
             }
         });
@@ -305,7 +307,7 @@ function mouseReleased() {
 function mouseDragged() {
     if (mouseHeld){
         graph.slider.setPosition(mouseX);
-        graph.setN(Math.round(graph.slider.getPortion() * MAX_N));
+        graph.setN(Math.round(graph.slider.getPortion() * maxN));
         redraw();
     }
 }
