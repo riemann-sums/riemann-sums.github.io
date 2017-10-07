@@ -114,34 +114,46 @@ class Graph {
         }
 
         for(var i = 0; i < ticks; i++) {
-            // need option to show incrs of PI
-            // need to use TEXT WIDTH here instead of just guessing, font size
-            // should not be considered constant / guarenteed
-            textSize(8);
+            // need option to show incrs of PI (?)
+            // method shrinkFont(string, fontSize, maxWidth)
+            // a while loop that decrs font until it will fit in a
+            // given width, then returns that target font size
+            // THIS IS ACTUALLY BAD
+            // font size should be unifom, what the method should do
+            // is truncate the actual text to be displated if it is
+            // too long to fit in the alloted tick space
+            // very weird bug when ticks is one.. set a min of 2 ;)
+            // has to do with button class, somehow ticks is affecting
+            // the untruncated length of the sums? to the point where
+            // clicking the slider toggles all three
+            var fontSize = Math.round((this.graphWidth / ticks) / 5);
+            var maxSize = Math.round((0.0333 * this.graphWidth));
+            fontSize = fontSize > maxSize ? maxSize : fontSize;
+            textSize(fontSize);
             stroke(27, 29, 28);
-            strokeWeight(2);
+            strokeWeight(3);
             fill(255);
 
             // X axis 
             if (!xAxisVisible) {
                 text(this.roundTo(this.minX + (i * (this.domain / ticks)), 3),
                     this.padding + (this.graphWidth / ticks) * i,
-                    this.padding + this.graphHeight + 8);
+                    this.padding + this.graphHeight + fontSize);
 
             } else {
                 text(this.roundTo(this.minX + (i * (this.domain / ticks)), 3),
                     this.padding + (this.graphWidth / ticks) * i,
-                    this.padding + this.graphHeight * this.yAxisRatio + 8);
+                    this.padding + this.graphHeight * this.yAxisRatio + fontSize);
             }
 
             // Y axis 
             if (!yAxisVisible) {
                 text(this.roundTo(this.minY + (i * (this.range / ticks)), 3),
-                    this.padding - 15,
+                    this.padding,
                     this.padding + this.graphHeight - i * (this.graphHeight / ticks));
             } else {
                 text(this.roundTo(this.minY + (i * (this.range / ticks)), 3), 
-                    width - this.padding - this.graphWidth * (this.maxX / this.domain) - 15,
+                    width - this.padding - this.graphWidth * (this.maxX / this.domain),
                     this.padding + this.graphHeight - i * (this.graphHeight / ticks));
             }
         }
@@ -316,6 +328,11 @@ class Graph {
         this.unscaledPoints = newPoints;
         this.scalePoints();
         this.sums = new Sums(this.n, this.unscaledPoints, this.domain);
+    }
+
+    setMaxN(max) {
+        this.maxN = max;
+        this.resize();
     }
 
     drawTopBar() {

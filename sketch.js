@@ -12,9 +12,11 @@ var graph,
     activeFunction = math.eval("f(x) = " + functionString);
 
 const ACCURACY = 10000;         // number of points computed
-const MAX_N = 100;              // max value of the n slider
-const TICKS = 20;
 const INIT_DOMAIN = 2 * Math.PI;
+
+// no longer constants, should not be ALL_CAPS
+var TICKS = 20;
+var MAX_N = 100;             // max value of the n slider
 
 var menuEntries = [];
 
@@ -30,7 +32,7 @@ function setup() {
     // callbacks here should return a value
     // true if valid input, false if not
     // if false, dont close menu, error animation
-    // transparent red circle, inflates under menu 
+    // transparent red circle, inflates under menu
     // as opacity decreases
     menuButtonX = width - graph.padding / 2;
     menuButtonY = 5 + graph.padding / 2;
@@ -47,10 +49,14 @@ function setup() {
             name: 'ticks',
             cb: setTicks
         },
-        {
-            name: 'tick size',
-            cb: setTickSize
-        },
+        // this should be increase font size or something? not sure
+        // if this should change all font sizes, could potentially
+        // cause issues with sum value display accuracy... will
+        // revsit
+        // {
+        //     name: 'tick size',
+        //     cb: setTickSize
+        // },
            {
             name: 'max n',
             cb: setMaxN
@@ -136,7 +142,6 @@ function drawMenu() {
         noStroke();
         text(entry.name, width / 2 - (w / 2), height / 2  - (h / 2) + (entryHeight / 2)+ entryHeight * entryId);
         entryId++;
-
     });
 
     stroke(255);
@@ -153,7 +158,7 @@ function setBounds() {
         graph.getBounds());
     var bounds = input.split(' ');
     for (var i = 0; i < 4; i++) {
-        if (isNaN(bounds[i])) {
+        if (bounds[i] && isNaN(bounds[i])) {
             bounds[i] = bounds[i].toLowerCase();
             if (bounds[i].includes('e')) {
                 bounds[i] = bounds[i].replace('e', Math.E);
@@ -190,15 +195,18 @@ function setFunction() {
     if (userInput !== null) {
         functionString = userInput;
         activeFunction = math.eval("f(x) = " + functionString);
+        console.log(math.eval("f(x) = " + functionString));
         populatePoints(graph.minX, graph.domain);
         graph.setPoints(testPoints);
         redraw();
     }
-    console.log("new f(x)");
 }
 
 function setTicks() {
-
+    var userInput = parseInt(prompt("Enter # ticks: ", TICKS));
+    if (!isNaN(userInput)) {
+        TICKS = userInput;
+    }
 }
 
 function setTickSize() {
@@ -206,7 +214,14 @@ function setTickSize() {
 }
 
 function setMaxN() {
-
+    var max = parseInt(prompt("Enter max n: ", graph.maxN));
+    if (!isNaN(max)) {
+        // there should be a method graph.setMaxN()
+        //graph.maxN = userInput;
+        max = max > 10000 ? 10000 : max;
+        MAX_N = max;
+        graph.setMaxN(max);
+    }
 }
 
 function windowResized() {
@@ -221,9 +236,11 @@ function drawMenuIcon (x, y) {
     var dotSize = graph.padding / 5;
     var iconSize = graph.padding - 5;
     fill (255, 100);
+    noStroke();
     ellipse(x, (y - iconSize / 3), dotSize, dotSize);
     ellipse(x, y, dotSize, dotSize);
     ellipse(x, (y + iconSize / 3), dotSize, dotSize);
+    stroke(255);
 }
 
 function mousePressed() {
@@ -247,7 +264,7 @@ function mousePressed() {
             }
         });
     }
-    if (dist(mouseX, mouseY, menuButtonX, menuButtonY) < graph.padding) {
+    if (dist(mouseX, mouseY, menuButtonX, menuButtonY) < graph.padding - 20) {
         menuActive = !menuActive;
         redraw();
     }
@@ -274,7 +291,6 @@ function mouseDragged() {
 }
 
 function keyPressed() {
-    console.log(keyCode)
     if (key === ' ') {
         menuActive = !menuActive;
         redraw();

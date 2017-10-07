@@ -14,13 +14,14 @@ Tool for calculating and visualizing Riemann sums for a given function on a give
 - [x] check for e and pi in entered bounds
 - [x] fix exta // missing (?) point bug
 - [x] change bound entry to signed values, allow for [+a, +b] and [-a, -b]
-- [x] rename domain/range to domain/range
+- [x] rename xRange/yRange to domain/range
+- [x] add buttons for changing tick #, type, n, and function
+- [x] draw labels inside of graph view
 - [ ] floating point precision (small #s) [detect magnitude on bound entry?]
 - [ ] validation for bounds and f(x) input
 - [ ] rewrite hastily crafted button class (pls), dolan suggestions
-- [ ] add buttons for changing tick #, type, n, and function
 - [ ] implement own text entry / dialog for f(x) prompt
 - [ ] 'usable' on mobile
 - [ ] display active function
-- [ ] draw labels inside of graph view
+- [ ] menu entries shouldn't close menu when prompt is canceled (see bounds)
 - [ ] line length...
