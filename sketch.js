@@ -80,6 +80,26 @@ function draw() {
     //drawPrompt(function() {console.log('hey')});
 }
 
+// This can also check if there are any undefined points in the
+// domain, not sure if I want to implement this without some
+// kind of notification system in place, could confuse users
+function isLegalFunc(min, domain, func) {
+    var x;
+
+    try {
+        for (var i = 0; i <= ACCURACY; i++) {
+            x = min + (domain) * (i / ACCURACY);
+            // check if defined everywher on the domain
+            // if (!func(x)) return false;
+            func(x);
+        }
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+}
+
 function populatePoints(min, domain) {
     var x;
     testPoints = [];
@@ -93,7 +113,7 @@ function populatePoints(min, domain) {
 // pass a callback function, fires on enter...
 // also pass a validation function? mayb not, will see later
 function drawPrompt(cb) {
-    var value = 'dingusdingusgidnisdfoisfslkdfjkjsdlfjslkfksdjf';
+    var value = 'this is a test prompt with a very long input';
     var display = value;
     var pWidth = width / 4;
     var pHeight = pWidth / 5;
@@ -193,12 +213,14 @@ function setBounds() {
 function setFunction() {
     var userInput = prompt("Enter new f(x): ", functionString);
     if (userInput !== null) {
-        functionString = userInput;
-        activeFunction = math.eval("f(x) = " + functionString);
-        console.log(math.eval("f(x) = " + functionString));
-        populatePoints(graph.minX, graph.domain);
-        graph.setPoints(testPoints);
-        redraw();
+        var func = math.eval("f(x) = " + userInput);
+        if (isLegalFunc(graph.minX, graph.domain, func)) {
+            functionString = userInput;
+            activeFunction = func;
+            populatePoints(graph.minX, graph.domain);
+            graph.setPoints(testPoints);
+            redraw();
+        }
     }
 }
 
@@ -216,8 +238,6 @@ function setTickSize() {
 function setMaxN() {
     var max = parseInt(prompt("Enter max n: ", graph.maxN));
     if (!isNaN(max)) {
-        // there should be a method graph.setMaxN()
-        //graph.maxN = userInput;
         max = max > 10000 ? 10000 : max;
         MAX_N = max;
         graph.setMaxN(max);
