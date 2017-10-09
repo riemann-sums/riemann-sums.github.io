@@ -112,7 +112,7 @@ class Graph {
         for(var i = 0; i < ticks; i++) {
             // need option to show incrs of PI (?)
             var fontSize = Math.round((this.graphWidth / ticks) / 5);
-            var maxSize = Math.round((0.0333 * this.graphWidth));
+            var maxSize = Math.round((0.015 * this.graphWidth));
             fontSize = fontSize > maxSize ? maxSize : fontSize;
             textSize(fontSize);
             stroke(27, 29, 28);
@@ -327,9 +327,9 @@ class Graph {
         textAlign(CENTER);
         textSize(this.padding / 2);
         fill(27, 29, 28, 200);
-        rect(width / 2, height - this.padding / 2.1, textWidth(functionString), this.padding, 5);
+        rect(width / 2, height - this.padding / 2.1, textWidth("f(x) = " + functionString), this.padding, 5);
         fill(213, 96, 97);
-        text(functionString, width / 2, height - this.padding / 3);
+        text("f(x) = " + functionString, width / 2, height - this.padding / 3);
         textAlign(LEFT);
         rectMode(CORNER);
     }
