@@ -1,7 +1,15 @@
 # Riemann Sums Visualization
-Tool for calculating and visualizing Riemann sums for a given function on a given bound. This project is meant to be a tool for students, teachers, and math nerds like me to explore and play with Riemann sums.
+Tool for calculating and visualizing Riemann sums for a given function. This project is a tool for students, teachers, and math nerds to play with calculus.
+![Screenshot](https://i.imgur.com/voWh8Qe.png)
 
-## To-do:
+### Controls
+Use the slider to change n and click the values above the graph to toggle Left, Right, and Trapezoidal sums. Open the menu by clicking the icon in the bottom right or by pressing space. You can:
+- Enter a custom f(x) [see math.js for all supported functions]
+- Set the bounds for the graph window and integral
+- Set the grid cell size (ticks)
+- Set a new max value for n, where n is the # of rectangles
+
+### To-do:
 - [x] padding around graph
 - [x] midpoint sum
 - [x] variable function
