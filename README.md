@@ -1,10 +1,11 @@
 # Riemann Sums Visualization
 ![Screenshot](https://i.imgur.com/voWh8Qe.png)
-Tool for calculating and visualizing Riemann sums for a given function. This project is a tool for students, teachers, and math nerds to play with calculus.
+##
+A tool for students, teachers, and math nerds to play with integrals.
 
 ### Controls
 Use the slider to change n and click the values above the graph to toggle Left, Right, and Trapezoidal sums. Open the menu by clicking the icon in the bottom right or by pressing space. You can:
-- Enter a custom f(x) [see math.js for all supported functions]
+- Enter a custom f(x) [see math.js docs for all supported functions]
 - Set the bounds for the graph window / interval
 - Set the grid cell size (ticks)
 - Set a new max value for n, where n is the # of subintervals 
