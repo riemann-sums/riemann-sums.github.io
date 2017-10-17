@@ -1,6 +1,4 @@
 # Riemann Sums Visualization
-A tool for students, teachers, and math nerds to play with riemann sums.
-##
 ![Screenshot](https://i.imgur.com/voWh8Qe.png)
 
 ### Controls
