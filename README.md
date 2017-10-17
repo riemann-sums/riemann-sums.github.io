@@ -1,7 +1,7 @@
 # Riemann Sums Visualization
-![Screenshot](https://i.imgur.com/voWh8Qe.png)
+A tool for students, teachers, and math nerds to play with riemann sums.
 ##
-A tool for students, teachers, and math nerds to play with integrals.
+![Screenshot](https://i.imgur.com/voWh8Qe.png)
 
 ### Controls
 Use the slider to change n and click the values above the graph to toggle Left, Right, and Trapezoidal sums. Open the menu by clicking the icon in the bottom right or by pressing space. You can:
