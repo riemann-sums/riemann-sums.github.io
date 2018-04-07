@@ -151,7 +151,9 @@ function drawMenu() {
         rect(width / 2, height / 2  - (h / 2) + (entryHeight / 2) + entryHeight * entryId, w, entryHeight);
         fill(255);
         noStroke();
-        text(entry.name, width / 2 - (w / 2), height / 2  - (h / 2) + (entryHeight / 2)+ entryHeight * entryId);
+        let textX = width / 2 - (w / 2) + w / 2 -  textWidth(entry.name) / 2;
+        let textY =  height / 2  - (h / 2) + (entryHeight / 2)+ entryHeight * entryId;
+        text(entry.name,  textX, textY);
         entryId++;
     });
 
